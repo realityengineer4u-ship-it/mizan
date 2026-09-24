@@ -25,7 +25,6 @@
     "btn-wa":"شارك على واتساب",
     "sh-native":"شارك (مشاركة الجهاز)",
     "sh-copy":"نسخ رسالة المشاركة",
-    "yt-sub":"ضغط اشتراك في القناة",
     "chan-card":"كرت القناة",
     "sup-pill":"زرار الدعم فوق",
     "coffee-btn":"دعم — كوب قهوة",
@@ -42,13 +41,33 @@
     "c-sa":"اختار السعودية",
     "lang-sw":"بدّل اللغة"
   };
-  function ev(id){
-    if(sent[id])return; sent[id]=1;
-    try{ window.goatcounter&&goatcounter.count&&goatcounter.count({path:"use/"+id,title:MAP[id],event:true}); }catch(e){}
+  function send(path,title){
+    if(sent[path])return; sent[path]=1;
+    try{ window.goatcounter&&goatcounter.count&&goatcounter.count({path:path,title:title,event:true}); }catch(e){}
+  }
+  function ytPlace(a){
+    var h=a.getAttribute("href")||"";
+    if(a.id==="yt-sub") return ["yt-card","كرت القناة"];
+    if(a.classList.contains("sub-strip")) return ["yt-strip","الشريط العلوي"];
+    if(a.closest("#rv-nudge")) return ["yt-report","من التقرير النهائي"];
+    if(h.indexOf("/join")>-1) return ["yt-join","عضوية القناة"];
+    if(h.indexOf("/videos")>-1) return ["yt-thanks","Super Thanks"];
+    if(a.closest("#support")) return ["yt-support","قسم الدعم"];
+    if(a.closest("footer")) return ["yt-footer","التذييل"];
+    return ["yt-other","لينك القناة"];
   }
   document.addEventListener("click",function(e){
+    var a=e.target.closest?e.target.closest('a[href*="youtube.com"]'):null;
+    if(a){
+      var pl=ytPlace(a);
+      send("yt/"+pl[0], "راح للقناة — "+pl[1]);
+      send("yt/total", "إجمالي اللي راحوا للقناة");
+      if((a.getAttribute("href")||"").indexOf("sub_confirmation")>-1)
+        send("yt/subscribe","ضغط اشتراك (صفحة الاشتراك)");
+      return;
+    }
     var el=e.target;
-    while(el&&el!==document.body){ if(el.id&&MAP[el.id]){ ev(el.id); return; } el=el.parentElement; }
+    while(el&&el!==document.body){ if(el.id&&MAP[el.id]){ send("use/"+el.id, MAP[el.id]); return; } el=el.parentElement; }
   },true);
 })();
 </script>

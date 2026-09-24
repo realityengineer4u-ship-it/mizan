@@ -15,6 +15,43 @@
 <style>:root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px ui-sans-serif,system-ui,-apple-system,sans-serif;background:#fbfbf9}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
+<script data-goatcounter="https://realityengineer.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function(){
+  var sent={};
+  var MAP={
+    "btn-report":"فتح التقرير النهائي",
+    "sh-wa":"شارك على واتساب",
+    "btn-wa":"شارك على واتساب",
+    "sh-native":"شارك (مشاركة الجهاز)",
+    "sh-copy":"نسخ رسالة المشاركة",
+    "yt-sub":"ضغط اشتراك في القناة",
+    "chan-card":"كرت القناة",
+    "sup-pill":"زرار الدعم فوق",
+    "coffee-btn":"دعم — كوب قهوة",
+    "ipa-copy":"نسخ انستاباي",
+    "rv-coffee":"دعم من التقرير",
+    "rv-print":"طباعة التقرير",
+    "rv-dl":"تنزيل التقرير",
+    "rv-csv":"تنزيل CSV",
+    "geo-go":"حدّد منطقته",
+    "geo-me":"موقعي الحالي",
+    "btn-save-sc":"حفظ سيناريو",
+    "c-eg":"اختار مصر",
+    "c-ae":"اختار الإمارات",
+    "c-sa":"اختار السعودية",
+    "lang-sw":"بدّل اللغة"
+  };
+  function ev(id){
+    if(sent[id])return; sent[id]=1;
+    try{ window.goatcounter&&goatcounter.count&&goatcounter.count({path:"use/"+id,title:MAP[id],event:true}); }catch(e){}
+  }
+  document.addEventListener("click",function(e){
+    var el=e.target;
+    while(el&&el!==document.body){ if(el.id&&MAP[el.id]){ ev(el.id); return; } el=el.parentElement; }
+  },true);
+})();
+</script>
 <title>ميزان البناء · Mizan</title>
 <!-- © 2026 مهندس الواقع (Reality Engineer) — جميع الحقوق محفوظة. ممنوع نسخ أو تعديل أو فك أو إعادة نشر أي جزء من الملف ده بدون إذن كتابي. | © 2026 Reality Engineer — All rights reserved. Copying, modifying, decoding or republishing any part of this file without written permission is prohibited. -->
 <meta name="copyright" content="© 2026 مهندس الواقع (Reality Engineer) — جميع الحقوق محفوظة. ممنوع نسخ أو تعديل أو فك أو إعادة نشر أي جزء من الملف ده بدون إذن كتابي. | © 2026 Reality Engineer — All rights reserved. Copying, modifying, decoding or republishing any part of this file without written permission is prohibited.">

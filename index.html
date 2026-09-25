@@ -160,6 +160,99 @@
   addEventListener("pagehide", doSnap);
 })();
 </script>
+<style>
+#sgate{--g-bg:rgba(15,22,19,.55);--g-card:#ffffff;--g-ink:#16201E;--g-mut:#46544F;--g-red:#CC1F1F;--g-red-ink:#fff;--g-ok:#23794A;--g-warn-bg:#FAEBD2;--g-warn:#7a4a08;--g-line:#DDE3E0;
+  position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--g-bg);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);font-family:"Noto Kufi Arabic","Noto Sans Devanagari",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+@media (prefers-color-scheme:dark){#sgate{--g-bg:rgba(0,0,0,.6);--g-card:#171F1D;--g-ink:#E4EBE9;--g-mut:#B8C5C1;--g-ok:#5CC08A;--g-warn-bg:#33260F;--g-warn:#E3A94A;--g-line:#2A3431}}
+#sgate[hidden]{display:none!important}
+#sgate .gc{background:var(--g-card);color:var(--g-ink);width:100%;max-width:420px;border-radius:20px;padding:26px 22px 20px;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center;box-sizing:border-box}
+#sgate .gi{width:64px;height:64px;border-radius:50%;background:var(--g-red);display:grid;place-items:center;margin:0 auto 14px}
+#sgate h2{margin:0 0 6px;font-size:21px;line-height:1.4;text-wrap:balance}
+#sgate .gs{margin:0 0 4px;color:var(--g-mut);font-size:14.5px;line-height:1.7}
+#sgate .gch{margin:14px 0 18px;padding:10px 12px;border:1px solid var(--g-line);border-radius:14px;display:flex;gap:10px;align-items:center;justify-content:center;font-size:14px}
+#sgate .gch b{font-size:15.5px}
+#sgate .gsteps{list-style:none;margin:0 0 16px;padding:0;text-align:start;font-size:14px;line-height:1.7;color:var(--g-mut)}
+#sgate .gsteps li{display:flex;gap:8px;align-items:flex-start;margin:4px 0}
+#sgate .gsteps span{flex:none;width:22px;height:22px;border-radius:50%;background:var(--g-line);color:var(--g-ink);display:grid;place-items:center;font-size:12.5px;font-weight:700;margin-top:2px}
+#sgate .gb{display:flex;width:100%;box-sizing:border-box;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:14px 18px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none}
+#sgate .gb.red{background:var(--g-red);color:var(--g-red-ink)}
+#sgate .gb.ok{background:var(--g-ok);color:#fff;margin-top:10px}
+#sgate .gb:focus-visible{outline:3px solid #C98612;outline-offset:3px}
+#sgate .gmsg{margin:12px 0 0;padding:10px 12px;border-radius:12px;font-size:13.5px;line-height:1.7;background:var(--g-warn-bg);color:var(--g-warn)}
+#sgate .gmsg.good{background:transparent;color:var(--g-ok);font-weight:700;font-size:15px}
+#sgate .gwait{margin:12px 0 0;font-size:13px;color:var(--g-mut)}
+#sgate .gfoot{margin:14px 0 0;font-size:12px;color:var(--g-mut)}
+html.sgate-lock,html.sgate-lock body{overflow:hidden!important}
+@media (prefers-reduced-motion:no-preference){#sgate .gc{animation:sgIn .35s ease-out}@keyframes sgIn{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}}
+</style>
+<div id="sgate" role="dialog" aria-modal="true" aria-labelledby="sg-t" hidden>
+  <div class="gc">
+    <div class="gi" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24"><path fill="#fff" d="M9 7.5v9l7.5-4.5z"/></svg></div>
+    <h2 id="sg-t"></h2>
+    <p class="gs" id="sg-s"></p>
+    <div class="gch"><b id="sg-ch"></b><span id="sg-n"></span></div>
+    <ol class="gsteps"><li><span>1</span><div id="sg-1"></div></li><li><span>2</span><div id="sg-2"></div></li></ol>
+    <a class="gb red" id="sg-go" href="https://www.youtube.com/@reality-engineer?sub_confirmation=1" target="_blank" rel="noopener"></a>
+    <div id="sg-state" aria-live="polite"></div>
+    <p class="gfoot" id="sg-f"></p>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY="mizan-sub", MIN_AWAY=6000;
+  try{ if(localStorage.getItem(KEY)) return; }catch(e){}
+  var L="ar";
+  try{ var h=(location.hash||"").slice(1), s=localStorage.getItem("mizan-lang");
+    L=(h==="ar"||h==="en"||h==="hi")?h:(s==="ar"||s==="en"||s==="hi")?s:(/^hi/i.test(navigator.language||"")?"hi":"ar"); }catch(e){}
+  var T={
+    ar:{t:"الأداة مجانية لمشتركي القناة",s:"ميزان البناء بيتعمل ويتحدّث كل يوم على حساب قناة «مهندس الواقع». اشتراكك هو اللي بيخليها مجانية.",ch:"مهندس الواقع",n:"· أكتر من 90 ألف مشترك",
+        a:"اضغط الزرار — هتفتح القناة ويطلعلك «اشتراك / Subscribe»",b:"اشترك وارجع للصفحة دي — الأداة هتفتح لوحدها",go:"اشترك في القناة",
+        wait:"مستنيينك ترجع من يوتيوب…",short:"رجعت بسرعة — اتأكد إنك ضغطت «اشتراك / Subscribe» في صفحة القناة، وبعدين ارجع هنا.",again:"افتح القناة تاني",
+        ok:"شكرًا لاشتراكك ✓",open:"افتح الأداة",manual:"اشتركت؟ افتح الأداة",f:"مشترك بالفعل؟ اضغط نفس الزرار وارجع — مرة واحدة بس على الجهاز ده."},
+    en:{t:"Free for channel subscribers",s:"Mizan is built and updated daily by the Reality Engineer channel. Your subscription is what keeps it free.",ch:"Reality Engineer",n:"· 90K+ subscribers",
+        a:"Tap the button — the channel opens with a “Subscribe” prompt",b:"Subscribe, then come back to this page — the tool unlocks by itself",go:"Subscribe to the channel",
+        wait:"Waiting for you to come back from YouTube…",short:"That was quick — make sure you tapped “Subscribe” on the channel page, then come back here.",again:"Open the channel again",
+        ok:"Thanks for subscribing ✓",open:"Open the tool",manual:"Subscribed? Open the tool",f:"Already subscribed? Tap the same button and come back — only once on this device."},
+    hi:{t:"चैनल सब्सक्राइबर्स के लिए मुफ़्त",s:"Mizan को Reality Engineer चैनल रोज़ बनाता और अपडेट करता है। आपका सब्सक्रिप्शन ही इसे मुफ़्त रखता है।",ch:"Reality Engineer",n:"· 90 हज़ार+ सब्सक्राइबर",
+        a:"बटन दबाएँ — चैनल खुलेगा और “Subscribe” दिखेगा",b:"सब्सक्राइब करें और इस पेज पर लौटें — टूल अपने-आप खुल जाएगा",go:"चैनल सब्सक्राइब करें",
+        wait:"YouTube से आपके लौटने का इंतज़ार…",short:"आप बहुत जल्दी लौट आए — चैनल पेज पर “Subscribe” दबाया है, पक्का करें, फिर यहाँ लौटें।",again:"चैनल फिर खोलें",
+        ok:"सब्सक्राइब करने के लिए धन्यवाद ✓",open:"टूल खोलें",manual:"सब्सक्राइब कर लिया? टूल खोलें",f:"पहले से सब्सक्राइब हैं? वही बटन दबाएँ और लौटें — इस डिवाइस पर सिर्फ़ एक बार।"}
+  }[L];
+  var g=document.getElementById("sgate"), $=function(i){return document.getElementById(i)}, st=$("sg-state"), go=$("sg-go");
+  g.setAttribute("dir",L==="ar"?"rtl":"ltr"); g.setAttribute("lang",L);
+  $("sg-t").textContent=T.t; $("sg-s").textContent=T.s; $("sg-ch").textContent=T.ch; $("sg-n").textContent=T.n;
+  $("sg-1").textContent=T.a; $("sg-2").textContent=T.b; go.textContent=T.go; $("sg-f").textContent=T.f;
+  function ev(p,t){ try{ var f=function(){ window.goatcounter&&goatcounter.count&&goatcounter.count({path:p,title:t,event:true}); }; window.goatcounter&&goatcounter.count?f():setTimeout(f,2500);}catch(e){} }
+  function show(){ g.hidden=false; document.documentElement.classList.add("sgate-lock"); setTimeout(function(){ try{go.focus()}catch(e){} },50); ev("gate-shown","شاشة الاشتراك ظهرت"); }
+  function unlock(how){
+    try{ localStorage.setItem(KEY, String(Date.now())); }catch(e){}
+    ev("gate-unlocked-"+how,"فتح الأداة بعد الاشتراك ("+how+")");
+    st.innerHTML=""; var m=document.createElement("p"); m.className="gmsg good"; m.textContent=T.ok; st.appendChild(m);
+    setTimeout(function(){ g.hidden=true; document.documentElement.classList.remove("sgate-lock"); },900);
+  }
+  function msg(cls,txt,btn){
+    st.innerHTML=""; var p=document.createElement("p"); p.className=cls; p.textContent=txt; st.appendChild(p);
+    if(btn){ var b=document.createElement("button"); b.type="button"; b.className="gb ok"; b.textContent=btn; b.onclick=function(){unlock("manual")}; st.appendChild(b); }
+  }
+  var clicked=0, leftAt=0, awayTotal=0, fallbackT=null;
+  go.addEventListener("click",function(){
+    clicked=Date.now(); ev("gate-sub-click","ضغط اشترك في شاشة الاشتراك");
+    msg("gwait",T.wait);
+    clearTimeout(fallbackT);
+    /* لو المتصفح ما سابش الصفحة (نافذة جنب بعض / منع النوافذ) — نظهر زرار يدوي بعد 25 ثانية */
+    fallbackT=setTimeout(function(){ if(!leftAt && !awayTotal) msg("gwait",T.wait,T.manual); },25000);
+  });
+  document.addEventListener("visibilitychange",function(){
+    if(!clicked) return;
+    if(document.hidden){ leftAt=Date.now(); return; }
+    if(!leftAt) return;
+    awayTotal+=Date.now()-leftAt; leftAt=0;
+    if(awayTotal>=MIN_AWAY) unlock("auto");
+    else { ev("gate-short","رجع بسرعة من يوتيوب"); msg("gmsg",T.short); go.textContent=T.again; }
+  });
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",show); else show();
+})();
+</script>
 <title>ميزان البناء · Mizan</title>
 <!-- © 2026 مهندس الواقع (Reality Engineer) — جميع الحقوق محفوظة. ممنوع نسخ أو تعديل أو فك أو إعادة نشر أي جزء من الملف ده بدون إذن كتابي. | © 2026 Reality Engineer — All rights reserved. Copying, modifying, decoding or republishing any part of this file without written permission is prohibited. -->
 <meta name="copyright" content="© 2026 مهندس الواقع (Reality Engineer) — جميع الحقوق محفوظة. ممنوع نسخ أو تعديل أو فك أو إعادة نشر أي جزء من الملف ده بدون إذن كتابي. | © 2026 Reality Engineer — All rights reserved. Copying, modifying, decoding or republishing any part of this file without written permission is prohibited.">
